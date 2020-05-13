@@ -16,9 +16,7 @@ use Illuminate\Support\Facades\Route;
 Route::get('/register', function () {
     return view('register');
 });
-Route::get('/utilisateurs', function () {
-    $users = ["Jean","Marc","Virginie"];
-    return view('utilisateurs.index',[
-        'users' => $users
-    ]);
-});
+
+Route::get('/utilisateurs', "UtilisateursController@list");
+
+Route::post('/utilisateur/create',"UtilisateursController@store");

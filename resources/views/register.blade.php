@@ -11,19 +11,19 @@
 
   <div class="container" style="width :60%;">
 
-    <form class="m-4">
-
+    <form class="m-4" method="POST" action="/utilisateur/create">
+    @csrf
     <div class="row">
         <div class="col-xl-6 col-lg-6 col-md-6 col-sm-12 mb-2">
           <div class="form-group">
             <label for="exampleInputEmail1"> Nom </label>
-            <input type="text" class="form-control">
+            <input type="text" class="form-control" name="nom">
           </div>
         </div>
         <div class="col-xl-6 col-lg-6 col-md-6 col-sm-12 mb-2">
           <div class="form-group">
             <label for="exampleInputEmail1"> Prénom </label>
-            <input type="text" class="form-control">
+            <input type="text" class="form-control" name="prenom">
           </div>
         </div>
       </div>
@@ -32,7 +32,7 @@
         <div class="col-xl-12 col-lg-12 col-md-12 col-sm-12 mb-2">
           <div class="form-group">
             <label for="exampleInputEmail1">Adresse e-mail </label>
-            <input type="email" class="form-control" id="exampleInputEmail1" aria-describedby="emailHelp">
+            <input type="email" class="form-control" name="email" id="exampleInputEmail1" aria-describedby="emailHelp">
           </div>
         </div>
       </div>
@@ -43,7 +43,7 @@
         <div class="col-xl-12 col-lg-12 col-md-12 col-sm-12 mb-2">
           <div class="form-group">
             <label for="exampleInputPassword1">Mot de passe</label>
-            <input type="password" class="form-control" id="exampleInputPassword1">
+            <input type="password" class="form-control" name="password1" id="exampleInputPassword1">
           </div>
         </div>
       </div>
@@ -52,7 +52,7 @@
         <div class="col-xl-12 col-lg-12 col-md-12 col-sm-12 mb-2">
           <div class="form-group">
             <label for="exampleInputPassword1">Répétez votre mot de passe </label>
-            <input type="password" class="form-control">
+            <input type="password" class="form-control" name="password2">
           </div>
         </div>
       </div>
