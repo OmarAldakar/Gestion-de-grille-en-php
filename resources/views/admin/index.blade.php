@@ -1,15 +1,28 @@
 @php
-use App\Http\Controllers\UserController;    
+use App\Http\Controllers\UserController;  
+$users = UserController::getNotConfirmed();
 @endphp
 @extends('layouts.app')
 
 @section('content')
 <div class="container">
-    <h2> Demandes d'inscription </h2>
+    
+    @if (count($users) == 0)
+    <div class="row justify-content-center">
+        <div class="col-md-8">
+            <div class="card">
+                <div class="card-header">{{ __('Demandes d\'inscription') }}</div>
 
+                <div class="card-body">
+                    {{ __('Il n\'y a pas de nouvelle demande d\'inscription') }}
+                </div>
+            </div>
+        </div>
+    </div>
+    @else
     <div class="container">
         <div class="row">
-            @foreach (UserController::getNotConfirmed() as $user)
+            @foreach ($users as $user)
             <div class="col-4" style="margin-bottom: 20px">
                 <div class="card" style="width: 20rem;">
                     <div class="card-body">
@@ -27,6 +40,7 @@ use App\Http\Controllers\UserController;
             @endforeach
         <div>
     </div>
+    @endif
     
 </div>
-@endsection()
+@endsection

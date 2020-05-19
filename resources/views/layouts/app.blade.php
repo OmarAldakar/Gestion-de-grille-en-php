@@ -45,7 +45,8 @@
                             </a>
                             <div class="dropdown-menu" aria-labelledby="navbarDropdown">
                             <a class="dropdown-item" href="/admin/accept-users">Demande d'inscription </a>
-                            <a class="dropdown-item" href="#">Gestion des membres </a>
+                            <a class="dropdown-item" href="/admin/manage-users">Gestion des membres </a>
+                            <a class="dropdown-item" href="/admin/create-ue">Création d'une UE  </a>
                             </div>
                         </li>
                     </ul>

@@ -16,6 +16,10 @@ class UserController extends Controller
         return User::where('confirmed','=','0')->where('email_verified_at','!=','null')->get();
     }
 
+    public static function getConfirmed() {
+        return User::where('confirmed','=','1')->get();
+    }
+
     public static function setAdmin($user) {
         $user->confirmed = true;
         $user->save();

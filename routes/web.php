@@ -20,6 +20,16 @@ Route::get('/home', 'HomeController@index')->name('home');
 
 Auth::routes(['verify' => true]);
 
+
+// Routing for admin
 Route::get('/admin/accept-users','AdminController@index');
 
+Route::post('/admin/accept-users/{id}', 'AdminController@index');
+
 Route::post('/admin/accept-users/{id}', 'AdminController@accept');
+
+Route::get('/admin/create-ue', 'AdminController@createUEView');
+
+Route::post('/admin/create-ue','AdminController@createUE');
+
+Route::get('/admin/manage-users','AdminController@manage');
