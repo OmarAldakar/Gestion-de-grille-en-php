@@ -27,4 +27,9 @@ class UserController extends Controller
         $admin->user_id = $user->id;
         $admin->save();
     }
+
+    public static function setResponsableUE($user,$ue_id) {
+        $user -> UEs() -> attach($ue_id);
+    }
+
 }

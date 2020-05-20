@@ -7,6 +7,7 @@ use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
 use App\Notifications\CustomResetPasswordNotification;
 use App\Notifications\CustomVerifyNotification;
+use App\UE;
 
 class User extends Authenticatable
 {
@@ -45,6 +46,20 @@ class User extends Authenticatable
 
     public function admin() {
         return $this->hasOne('App\Admin');
+    }
+
+    /*
+    * Les UEs pour lesquel cet utilisateur est responsable (faire UEs->get())
+    */
+    public function UEs() {
+        return $this->belongsToMany('App\UE', 'ue_user', 'user_id', 'ue_id');
+    }
+
+    /*
+    * Retourne les ues pour lesquel cet utilisateur n'est pas responsable 
+    */
+    public function nonResponsable() {
+        return UE::all() -> diff ($this -> UEs () -> get());
     }
 
     public function sendPasswordResetNotification($token)

@@ -33,3 +33,9 @@ Route::get('/admin/create-ue', 'AdminController@createUEView');
 Route::post('/admin/create-ue','AdminController@createUE');
 
 Route::get('/admin/manage-users','AdminController@manage');
+
+Route::post('/admin/delete-user/{id}','AdminController@deleteUser');
+
+Route::post('/admin/promote-admin/{id}','AdminController@promoteAdmin');
+
+Route::post('/admin/add-ue/{id}','AdminController@addUE');

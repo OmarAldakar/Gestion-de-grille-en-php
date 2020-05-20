@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 use App\User;
+use App\Admin;
 use Illuminate\Support\Facades\Validator;
 use App\UE;
 
@@ -60,6 +61,33 @@ class AdminController extends Controller
     }
 
     public function manage() {
+        return view('admin.manage-users');
+    }
+
+    public function deleteUser($id) {
+        $user = User::find($id);
+        if ($user != null) {
+            $user->delete();
+        }
+        return view('admin.manage-users');
+    }
+
+    public function promoteAdmin($id) {
+        $user = User::find($id);
+        if ($user != null) {
+            $admin = new Admin();
+            $admin->user()->associate($user);
+            $admin->save();
+        }
+        return view('admin.manage-users');
+    }
+
+    public function addUE($id,Request $request) {
+        $data = $request->all();
+        $user = User::find($id);
+        if ($user != null) {
+            UserController::setResponsableUE($user,$data['ue']);
+        }
         return view('admin.manage-users');
     }
 }
