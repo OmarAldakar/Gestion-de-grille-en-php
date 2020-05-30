@@ -32,4 +32,8 @@ class UserController extends Controller
         $user -> UEs() -> attach($ue_id);
     }
 
+    public static function isResponsableUE($user) {
+        return !$user->UEs()->get()->isEmpty();
+    }
+
 }

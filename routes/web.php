@@ -39,3 +39,8 @@ Route::post('/admin/delete-user/{id}','AdminController@deleteUser');
 Route::post('/admin/promote-admin/{id}','AdminController@promoteAdmin');
 
 Route::post('/admin/add-ue/{id}','AdminController@addUE');
+
+//Routing for responsable d'UE
+Route::get("/resp/new-grille","RespController@createGrille");
+
+Route::get("/resp/manage-eleves","RespController@manageEleves");
