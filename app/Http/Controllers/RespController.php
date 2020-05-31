@@ -98,17 +98,20 @@ class RespController extends Controller
             }
         }
 
-        return view('responsable.crea-grille', ["ue" => UE::find($ue_id)]);
+        return $this->index($ue_id);
     }
 
+    // Retourne la vue associé
     public function manageEleves() {
         return view("responsable.gestion-eleves");
     }
 
+    // Retourne la vue associé
     public function index($id) {
         return view("responsable.index")->with("ue",UE::find($id));
     }
 
+    // Crée un exercice à l'ue
     public function addExercice($id, Request $request) {
         $data = $request->all();
         
@@ -124,35 +127,55 @@ class RespController extends Controller
             'ue_id' => $id
         ]);
 
-        return view('responsable.index')->with("ue",UE::find($id));
+        return $this->index($id);
     }
 
+    // Supprime l'exercice $ex_id
     public function deleteExercice($ue_id,$ex_id) {
         $exercice = Exercice::find($ex_id);
-        if ($exercice == null) {
-            return view('responsable.index')->with("ue",UE::find($ue_id));
-        }
+        $exercice->grilles()->detach();
+        $exercice->delete();
 
-        if ($exercice->ue_id == $ue_id) {
-            $exercice->grilles()->detach();
-            $exercice->delete();
-        }
         return view('responsable.index')->with("ue",UE::find($ue_id));
     }
 
+    // Retourne la vue associé
     public function detailGrille ($ue_id,$ex_id,$grille_id) {
         return view("responsable.detail-grille");
     }
 
+    // Associe la grille donné en paramètre à ex_id et à l'ue
     public function associate($ue_id,$ex_id,Request $request) {
+        // Récupère les paramètre de la requète
         $data = $request->all();
-        $exercice = Exercice::find($ex_id);
-        if ($exercice == null) {
-            return view('responsable.index')->with("ue",UE::find($ue_id));
-        }
+        if ($data['grille'] != null) {
+            // RespMiddleware nous assure que $exercice et $ue sont non nul
+            $exercice = Exercice::find($ex_id);
+            $ue = UE::find($ue_id);
 
-        if ($exercice->ue_id == $ue_id) {
-            $exercice->grilles()->attach($data['grille']);
+            // On associe la grille à l'exercice puis la grille à l'ue
+            $exercice->grilles()->syncWithoutDetaching([$data['grille']]);
+            $ue->grilles()->syncWithoutDetaching([$data['grille']]);
+        }
+        return view('responsable.index')->with("ue",UE::find($ue_id));
+    }
+
+    public function disassociate($ue_id,$grille_id) {
+        //On récupère les objets $ue et $grille
+        $ue = UE::find($ue_id);
+        $grille = Grille::find($grille_id);
+        if ($ue != null && $grille != null) {
+            //On supprime l'association UE/grille
+            $ue -> grilles()->detach($grille_id);
+            //On supprime les association Exercices/grille
+            foreach ($ue->exercices()->get() as $exercice) {
+                $exercice -> grilles()->detach($grille_id);
+            }
+
+            // Si la grille n'est associé à aucune autre UE
+            if ( $grille -> ues() -> get()->isEmpty()) {
+                $grille->delete();
+            }
         }
         return view('responsable.index')->with("ue",UE::find($ue_id));
     }

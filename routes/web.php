@@ -56,3 +56,5 @@ Route::post("/resp/delete-exercice/{id}/{ex_id}","RespController@deleteExercice"
 Route::get("/resp/detail-grille/{id}/{ex_id}/{grille_id}","RespController@detailGrille");
 
 Route::post("/resp/associate/{id}/{ex_id}","RespController@associate");
+
+Route::post("/resp/disociate/{id}/{grille_id}","RespController@disassociate");
