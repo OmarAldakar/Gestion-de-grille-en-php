@@ -41,6 +41,18 @@ Route::post('/admin/promote-admin/{id}','AdminController@promoteAdmin');
 Route::post('/admin/add-ue/{id}','AdminController@addUE');
 
 //Routing for responsable d'UE
-Route::get("/resp/new-grille","RespController@createGrille");
+Route::get("/resp/new-grille/{id}","RespController@createGrilleView");
 
-Route::get("/resp/manage-eleves","RespController@manageEleves");
+Route::post("/resp/new-grille/{id}","RespController@createGrille");
+
+Route::get("/resp/manage-eleves/{id}","RespController@manageEleves");
+
+Route::get('/resp/{id}','RespController@index');
+
+Route::post("/resp/new-exercice/{id}","RespController@addExercice");
+
+Route::post("/resp/delete-exercice/{id}/{ex_id}","RespController@deleteExercice");
+
+Route::get("/resp/detail-grille/{id}/{ex_id}/{grille_id}","RespController@detailGrille");
+
+Route::post("/resp/associate/{id}/{ex_id}","RespController@associate");

@@ -64,7 +64,7 @@
                         </a>
                         <div class="dropdown-menu" aria-labelledby="navbarDropdown">
                             @foreach (Auth::user()->UEs()->get() as $ue)
-                            <a class="dropdown-item" href="#"> {{$ue->nom}} {{$ue->annee}} </a>
+                            <a class="dropdown-item" href="{{url('/resp',[$ue->id])}}"> {{$ue->nom}} {{$ue->annee}} </a>
                             @endforeach
 
                         </div>

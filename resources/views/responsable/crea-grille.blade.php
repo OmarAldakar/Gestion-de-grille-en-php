@@ -1,15 +1,25 @@
 @extends('layouts.app')
 
 @section('content')
-<form action="POST">
+<form method="POST">
     @csrf
 
     <div class="container" style="background-color: #f7f7f7;padding : 10px;border-radius : 20px">
+        @if ($errors->any())
+            <div class="alert alert-danger">
+                <ul>
+                    @foreach ($errors->all() as $error)
+                        <li>{{ $error }}</li>
+                    @endforeach
+                </ul>
+            </div>
+        @endif
+
         <div class="form-group">
             <div class="col-md-6 col-lg-6 col-sm-12 col-xl-6">
                 <label for="exampleFormControlInput1" style="font-size: larger;font-weight:normal">Titre de la grille
                 </label>
-                <input type="text" class="form-control" name="titre">
+                <input type="text" class="form-control" autofocus name="titre">
             </div>
         </div>
         <div class="table-responsive" style="padding-left : 20px;padding-right : 20px;padding-top:10px">
@@ -56,7 +66,7 @@
         <div class="form-group">
             <div class="col-md-12 col-lg-12 col-sm-12 col-xl-12">
                 <label style="font-size: larger">Précisions </label>
-                <textarea type="text" class="form-control" name="titre" style="height: 200px"> </textarea>
+                <textarea type="text" class="form-control" name="precision" style="height: 200px"> </textarea>
             </div>
 
         </div>

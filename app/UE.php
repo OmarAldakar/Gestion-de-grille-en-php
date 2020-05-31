@@ -15,6 +15,10 @@ class UE extends Model
     }
 
     public function responsables() {
-        $this->belongsToMany('App\UE', 'ue_user', 'ue_id', 'user_id');
+        return $this->belongsToMany('App\User', 'ue_user', 'ue_id', 'user_id');
+    }
+
+    public function grilles() {
+        return $this->belongsToMany('App\Grille', 'grille_ue', 'ue_id', 'grille_id');
     }
 }

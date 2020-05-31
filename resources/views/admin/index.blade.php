@@ -23,7 +23,7 @@ $users = UserController::getNotConfirmed();
     <div class="container">
         <div class="row">
             @foreach ($users as $user)
-            <div class="col-4" style="margin-bottom: 20px">
+            <div class="col-sm-12 col-md-6 col-xl-4 col-lg-6" style="margin-bottom: 20px">
                 <div class="card" style="width: 20rem;">
                     <div class="card-body">
                     <h5 class="card-title">{{$user->prenom}} {{ $user->name}} </h5>

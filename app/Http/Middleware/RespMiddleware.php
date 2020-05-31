@@ -17,7 +17,7 @@ class RespMiddleware
      */
     public function handle($request, Closure $next)
     {
-        if (UserController::isResponsableUE(Auth::user()))
+        if (UserController::isResponsable(Auth::user(),$request->route('id')))
             return $next($request);
         return redirect(RouteServiceProvider::HOME);
     }

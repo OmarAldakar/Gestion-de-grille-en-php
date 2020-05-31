@@ -33,7 +33,11 @@ class UserController extends Controller
     }
 
     public static function isResponsableUE($user) {
-        return !$user->UEs()->get()->isEmpty();
+        return $user != null && !$user->UEs()->get()->isEmpty();
+    }
+
+    public static function isResponsable($user,$id) {
+        return $user != null && $user->UEs()->find($id) != null;
     }
 
 }
