@@ -33,7 +33,7 @@
                 <div class="card-body">
                 <h5 class="card-title" style="margin-bottom: 30px"> {{$grille->titre}}</h5>
                 <div class="row pl-3">
-                <button type="button" class="btn btn-primary mr-2">Visualiser</button>
+                <a href="{{url('/grille',[$grille->id])}}" class="btn btn-primary mr-2">Visualiser</a>
                 <form method="POST" action="{{url('/resp/disociate',[$ue->id,$grille->id])}}">
                     @csrf
                     <button type="submit" class="btn btn-danger">Supprimer</button>

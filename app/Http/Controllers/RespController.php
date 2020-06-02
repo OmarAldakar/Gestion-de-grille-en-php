@@ -4,11 +4,14 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Validator;
+use Illuminate\Support\Collection;
 
 use App\UE;
 use App\Exercice;
 use App\Grille;
 use App\Critere;
+use App\Eleve;
+use App\Repartition;
 
 class RespController extends Controller
 {
@@ -102,8 +105,8 @@ class RespController extends Controller
     }
 
     // Retourne la vue associé
-    public function manageEleves() {
-        return view("responsable.gestion-eleves");
+    public function manageEleves($ue_id) {
+        return view("responsable.gestion-eleves")->with('ue',UE::find($ue_id));
     }
 
     // Retourne la vue associé
@@ -141,7 +144,11 @@ class RespController extends Controller
 
     // Retourne la vue associé
     public function detailGrille ($ue_id,$ex_id,$grille_id) {
-        return view("responsable.detail-grille");
+        return view("responsable.detail-grille", [
+            "ue" => UE::find($ue_id),
+            "exercice" => Exercice::find($ex_id),
+            "grille" => Grille::find($grille_id)
+        ]);
     }
 
     // Associe la grille donné en paramètre à ex_id et à l'ue
@@ -179,5 +186,91 @@ class RespController extends Controller
         }
         return view('responsable.index')->with("ue",UE::find($ue_id));
     }
+
+    public function newEleve($data,$ue_id) {
+        // Validate data
+        $validator = Validator::make($data,[
+            'nom' => ['required', 'string', 'max:255'],
+            'prenom' => ['required', 'string', 'max:255'],
+            'email' => ['required','email']
+        ] );
+        $validator->validate();
+
+        $eleve = Eleve::where('nom','=',$data['nom'])
+                        ->where('prenom','=',$data['prenom'])
+                        ->where('email','=',$data['email'])->first();
+        
+        if ($eleve == null) {
+            $eleve = Eleve::create([
+                'nom' => $data['nom'],
+                'prenom' => $data['prenom'],
+                'email' => $data['email'],
+            ]);
+        }
+
+        $eleve->ues()->syncWithoutDetaching([$ue_id]);
+    }
+
+    public function addEleve($ue_id,Request $request) {
+        $data = $request->all();
+
+        $this->newEleve($data,$ue_id);
+        return $this->manageEleves($ue_id);
+    }
+
+    public function removeEleve($ue_id,$eleve_id, Request $request) {
+        UE::find($ue_id)->eleves()->detach($eleve_id);
+        return $this->manageEleves($ue_id);
+    }
     
+    public function importEleve($ue_id,Request $request) {
+        $data = $request->all();
+
+        
+        if ($data['file'] != null) {
+            $handle = fopen($data['file']->path(), "r");
+
+            while ($csvLine = fgetcsv($handle, 1000, ",")) {
+                $this->newEleve([
+                    'nom' => $csvLine[0],
+                    'prenom' =>$csvLine[1],
+                    'email' => $csvLine[2],
+                ],$ue_id);
+            }
+        }
+
+        return $this->manageEleves($ue_id);
+    }
+
+    public function associateCorrecteur($ue_id,$ex_id,$grille_id,Request $request) {
+        $data = $request->all();
+
+        foreach($data['correcteurs'] as $correcteur_id) {
+            $repartition = Repartition::where('exercice_id','=',$ex_id)
+                                    ->where('grille_id','=',$grille_id)
+                                    ->where('correcteur_id','=',$correcteur_id)->first();
+            if ($repartition == null) {
+                Repartition::create([
+                    'exercice_id' => $ex_id,
+                    'grille_id' => $grille_id,
+                    'correcteur_id' => $correcteur_id
+                ]);
+            }
+        }
+
+        return $this->detailGrille($ue_id,$ex_id,$grille_id);
+    }
+
+    public function associateStudent($ue_id,$ex_id,$grille_id,$correcteur_id,Request $request) {
+        $data = $request->all();
+        $repartition = Repartition::where('exercice_id','=',$ex_id)
+                                    ->where('grille_id','=',$grille_id)
+                                    ->where('correcteur_id','=',$correcteur_id)->first();
+
+        if ($repartition != null && $data['eleves'] != null) {
+            $repartition->eleves()->syncWithoutDetaching($data['eleves']);
+        }
+
+        return $this->detailGrille($ue_id,$ex_id,$grille_id);
+    }
 }

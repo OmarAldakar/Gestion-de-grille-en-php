@@ -102,6 +102,9 @@ $users = UserController::getConfirmed();
                         <span aria-hidden="true">&times;</span>
                       </button>
                     </div>
+                    <div class="modal-body">
+                      <button type="button" class="btn btn-secondary" data-dismiss="modal">Fermer</button>
+                    </div>
                   </div>
                   @endif
 

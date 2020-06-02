@@ -2,7 +2,7 @@
 
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\AdminController;
-
+use App\Grille;
 /*
 |--------------------------------------------------------------------------
 | Web Routes
@@ -58,3 +58,17 @@ Route::get("/resp/detail-grille/{id}/{ex_id}/{grille_id}","RespController@detail
 Route::post("/resp/associate/{id}/{ex_id}","RespController@associate");
 
 Route::post("/resp/disociate/{id}/{grille_id}","RespController@disassociate");
+
+Route::post("/resp/create-eleve/{id}","RespController@addEleve");
+
+Route::post("/resp/delete/{id}/{eleve_id}","RespController@removeEleve");
+
+Route::post("/resp/importEleve/{id}","RespController@importEleve");
+
+Route::post("/resp/associate-correcteur/{id}/{ex_id}/{grille_id}","RespController@associateCorrecteur");
+
+Route::post("/resp/associate-student/{id}/{ex_id}/{grille_id}/{user_id}","RespController@associateStudent");
+// Route vue grille
+Route::get("/grille/{grille_id}", function($id) {
+    return view ('responsable.grille')->with('grille',Grille::find($id));
+});

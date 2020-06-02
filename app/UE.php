@@ -21,4 +21,8 @@ class UE extends Model
     public function grilles() {
         return $this->belongsToMany('App\Grille', 'grille_ue', 'ue_id', 'grille_id');
     }
+
+    public function eleves() {
+        return $this->belongsToMany('App\Eleve', 'eleve_ue', 'ue_id', 'eleve_id');
+    }
 }
