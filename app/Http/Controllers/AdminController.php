@@ -7,6 +7,9 @@ use App\User;
 use App\Admin;
 use Illuminate\Support\Facades\Validator;
 use App\UE;
+use App\Repartition;
+use App\Exercice;
+use Illuminate\Support\Facades\Auth;
 
 class AdminController extends Controller
 {
@@ -66,6 +69,14 @@ class AdminController extends Controller
 
     public function deleteUser($id) {
         $user = User::find($id);
+         
+        // Si je supprime quelqu'un qui corrige des exercice je récupère ses corrections
+        $repartitions = Repartition::where('correcteur_id','=',$id)->get();
+        foreach ($repartitions as $rep) {
+            $rep->correcteur_id = Auth::user()->id;
+            $rep->save();
+        }
+
         if ($user != null) {
             $user->delete();
         }

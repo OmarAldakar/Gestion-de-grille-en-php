@@ -21,13 +21,13 @@
                         <td>
                             <p> {{$critere->libelle}} </p>
                         </td>
-                        <td>
+                        <td style="text-align: center">
                             {{$critere->niveau1}}
                         </td>
-                        <td>
+                        <td style="text-align: center">
                             {{$critere->niveau2}}
                         </td>
-                        <td>
+                        <td style="text-align: center">
                             {{$critere->niveau3}}
                         </td>
                     </tr>                        

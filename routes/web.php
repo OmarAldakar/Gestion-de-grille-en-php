@@ -68,7 +68,20 @@ Route::post("/resp/importEleve/{id}","RespController@importEleve");
 Route::post("/resp/associate-correcteur/{id}/{ex_id}/{grille_id}","RespController@associateCorrecteur");
 
 Route::post("/resp/associate-student/{id}/{ex_id}/{grille_id}/{user_id}","RespController@associateStudent");
+
+Route::get("/resp/generate-bilan/{id}","RespController@generateBilan");
 // Route vue grille
 Route::get("/grille/{grille_id}", function($id) {
     return view ('responsable.grille')->with('grille',Grille::find($id));
 });
+
+//Routes correcteurs
+Route::get("/correcteur/{ue_id}","CorrecteurController@index");
+
+Route::get("/correcteur/{ue_id}/{corr_id}/{ex_id}","CorrecteurController@correction");
+
+Route::post("/correcteur/{ue_id}/{corr_id}/{ex_id}","CorrecteurController@modification");
+
+Route::post("/correcteur/dissociate/{ue_id}/{corr_id}/{ex_id}/{eleve_id}","CorrecteurController@disociate");
+
+Route::post("/correcteur/associate/{ue_id}/{corr_id}/{ex_id}","CorrecteurController@associate");

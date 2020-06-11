@@ -49,16 +49,16 @@
                   <p> {{$eleve->email}}<p>
                   </div>
               </div>
-          </div>            
+          </div>          
           @endforeach
       </div>
 
       <div class="row" style="text-align : right;">
-        <button type="button" class="btn btn-primary" style="font-size : medium;margin-top : 10px;margin-left : 15px;" data-toggle="modal" data-target="#exampleModal{{$eleve->id}}">
+        <button type="button" class="btn btn-primary" style="font-size : medium;margin-top : 10px;margin-left : 15px;" data-toggle="modal" data-target="#exampleModal{{$user->id}}">
 
             Ajouter un élève
         </button>
-        <div class="modal fade" id="exampleModal{{$eleve->id}}" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+        <div class="modal fade" id="exampleModal{{$user->id}}" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
           <div class="modal-dialog">
               @php
                 $eleves = RepartitionController::getNonAssociatedEleve($exercice->id,$grille->id,$ue->id)
@@ -155,7 +155,7 @@
       @else
       <div class="modal-content">
         <div class="modal-header">
-          <h5 class="modal-title" id="exampleModalLabel"> Aucune nouvelle grille a été trouvée </h5>
+          <h5 class="modal-title" id="exampleModalLabel"> Aucun correcteur n'a été trouvé </h5>
           <button type="button" class="close" data-dismiss="modal" aria-label="Close">
             <span aria-hidden="true">&times;</span>
           </button>

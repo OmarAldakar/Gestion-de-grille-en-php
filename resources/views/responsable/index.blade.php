@@ -15,7 +15,7 @@
     <div class="alert alert-danger"> Le champ titre est requis </div>
 @enderror
 <div class="row mb-4 ml-1">
-    <button type="submit" class="btn btn-primary mr-3 mb-2" style="width: 200px"> Générer le bilan de l'UE </button>
+    <a  class="btn btn-primary mr-3 mb-2" style="width: 200px" href="{{url('/resp/generate-bilan',[$ue->id])}}"> Générer le bilan de l'UE </a>
     <button type="submit" class="btn btn-primary mr-3 mb-2"  data-toggle="modal" data-target="#exampleModal" style="width: 200px"> Ajouter un exerice </button>
     <a class="btn btn-primary mr-3 mb-2"  style="width: 200px" href="{{url('/resp/manage-eleves',[$ue->id])}}"> Gérer la liste des élèves </a>
 </div>

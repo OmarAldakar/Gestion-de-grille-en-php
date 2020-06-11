@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Validator;
 use Illuminate\Support\Collection;
+use Illuminate\Support\Facades\DB;
 
 use App\UE;
 use App\Exercice;
@@ -12,6 +13,7 @@ use App\Grille;
 use App\Critere;
 use App\Eleve;
 use App\Repartition;
+use App\CorrectionGrille;
 
 class RespController extends Controller
 {
@@ -136,6 +138,13 @@ class RespController extends Controller
     // Supprime l'exercice $ex_id
     public function deleteExercice($ue_id,$ex_id) {
         $exercice = Exercice::find($ex_id);
+
+        //Supprime toute les repartitions ou cette exercice aparait
+        $repartitions = Repartition::where('exercice_id','=',$ex_id)->get();
+        foreach ($repartitions as $rep) {
+            $deleted = $rep->deep_delete();
+        }
+
         $exercice->grilles()->detach();
         $exercice->delete();
 
@@ -177,6 +186,10 @@ class RespController extends Controller
             //On supprime les association Exercices/grille
             foreach ($ue->exercices()->get() as $exercice) {
                 $exercice -> grilles()->detach($grille_id);
+                $repartitions = Repartition::where('exercice_id','=',$exercice->id)->where('grille_id',$grille_id)->get();
+                foreach ($repartitions as $rep) {
+                    $deleted = $rep->deep_delete();
+                }
             }
 
             // Si la grille n'est associé à aucune autre UE
@@ -219,23 +232,44 @@ class RespController extends Controller
     }
 
     public function removeEleve($ue_id,$eleve_id, Request $request) {
-        UE::find($ue_id)->eleves()->detach($eleve_id);
+        $ue = UE::find($ue_id);
+        $ue->eleves()->detach($eleve_id);
+
+        foreach($ue->exercices()->get() as $exercice) {
+            foreach ($exercice->grilles()->get() as $grille) {
+                $data = Repartition::join('repartition_eleve','id','repartition_id')
+                                ->where('grille_id','=',$grille->id)
+                                ->where('exercice_id','=',$exercice->id)
+                                ->where('eleve_id','=',$eleve_id)->first();
+                if($data != null) {
+                    DB::table('repartition_eleve')->where('eleve_id','=',$data->eleve_id)
+                                                    ->where('grille_corr_id','=',$data->grille_corr_id)
+                                                    ->where('repartition_id','=',$data->repartition_id)->delete();
+                    $correction = CorrectionGrille::find($data->grille_corr_id);
+                    if (RepartitionController::getEleveByCorrection($correction->id)->isEmpty()) {
+                        $deleted = $correction->deep_delete();
+                    }
+                }            
+            }
+        }
+
         return $this->manageEleves($ue_id);
     }
     
     public function importEleve($ue_id,Request $request) {
         $data = $request->all();
 
-        
-        if ($data['file'] != null) {
+        if (array_key_exists('file',$data)) {
             $handle = fopen($data['file']->path(), "r");
 
             while ($csvLine = fgetcsv($handle, 1000, ",")) {
-                $this->newEleve([
-                    'nom' => $csvLine[0],
-                    'prenom' =>$csvLine[1],
-                    'email' => $csvLine[2],
-                ],$ue_id);
+                if (count($csvLine) >= 3) {
+                    $this->newEleve([
+                        'nom' => $csvLine[0],
+                        'prenom' =>$csvLine[1],
+                        'email' => $csvLine[2],
+                    ],$ue_id);
+                }
             }
         }
 
@@ -268,9 +302,19 @@ class RespController extends Controller
                                     ->where('correcteur_id','=',$correcteur_id)->first();
 
         if ($repartition != null && $data['eleves'] != null) {
-            $repartition->eleves()->syncWithoutDetaching($data['eleves']);
+            foreach ($data['eleves'] as $eleve) {
+                $corr_id = CorrectionGrille::createFromGrille($grille_id);
+                DB::table('repartition_eleve')->insert([
+                    ['repartition_id'=>$repartition->id,'eleve_id'=>$eleve,'grille_corr_id'=>$corr_id]
+                ]);
+            }
         }
 
         return $this->detailGrille($ue_id,$ex_id,$grille_id);
+    }
+
+    public function generateBilan($ue_id) {
+        $data = RepartitionController::getBilan(UE::find($ue_id));
+        RepartitionController::export_data_to_csv($data);
     }
 }

@@ -4,7 +4,7 @@ use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
 
-class RepartitionEleve extends Migration
+class CreateCorrectionCriteresTable extends Migration
 {
     /**
      * Run the migrations.
@@ -13,11 +13,13 @@ class RepartitionEleve extends Migration
      */
     public function up()
     {
-        Schema::create('repartition_eleve', function (Blueprint $table) {
-            $table->bigInteger('repartition_id');
-            $table->bigInteger('eleve_id');
+        Schema::create('correction_criteres', function (Blueprint $table) {
+            $table->id();
+            $table->timestamps();
+            $table->string('commentaire',2000)->nullable();
+            $table->bigInteger('critere_id');
             $table->bigInteger('grille_corr_id');
-            $table->primary(array('repartition_id','eleve_id'));
+            $table->tinyInteger('niveau');
         });
     }
 
@@ -28,6 +30,6 @@ class RepartitionEleve extends Migration
      */
     public function down()
     {
-        Schema::dropIfExists('repartition_eleve');
+        Schema::dropIfExists('correction_criteres');
     }
 }

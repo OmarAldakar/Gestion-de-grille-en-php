@@ -31,7 +31,7 @@
     <nav class="navbar navbar-expand-md navbar-light bg-white shadow-sm">
         <div class="container">
             <a class="navbar-brand" href="{{ url('/') }}">
-                Acceuil
+                Accueil
             </a>
             <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarSupportedContent"
                 aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="{{ __('Toggle navigation') }}">
@@ -66,9 +66,31 @@
                             @foreach (Auth::user()->UEs()->get() as $ue)
                             <a class="dropdown-item" href="{{url('/resp',[$ue->id])}}"> {{$ue->nom}} {{$ue->annee}} </a>
                             @endforeach
-
                         </div>
                     </li>
+                    @endif
+
+                    @php
+                        use App\Http\Controllers\RepartitionController;
+                    @endphp
+                    @if (Auth::user() != null)
+
+                    @php
+                        $correcteur_ue = RepartitionController::getUesByCorrecteur(Auth::user()->id);    
+                    @endphp
+                        @if (!$correcteur_ue->isEmpty())
+                        <li class="nav-item dropdown">
+                            <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button"
+                                data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                                Correcteur
+                            </a>
+                            <div class="dropdown-menu" aria-labelledby="navbarDropdown">
+                                @foreach ($correcteur_ue as $ue)
+                                <a class="dropdown-item" href="{{url('/correcteur',[$ue->id])}}"> {{$ue->nom}} {{$ue->annee}} </a>
+                                @endforeach
+                            </div>
+                        </li>                        
+                        @endif
                     @endif
                 </ul>
 
@@ -81,7 +103,7 @@
                     </li>
                     @if (Route::has('register'))
                     <li class="nav-item">
-                        <a class="nav-link" href="{{ route('register') }}">{{ __('S\'enregister') }}</a>
+                        <a class="nav-link" href="{{ route('register') }}">{{ __('S\'enregistrer') }}</a>
                     </li>
                     @endif
                     @else
