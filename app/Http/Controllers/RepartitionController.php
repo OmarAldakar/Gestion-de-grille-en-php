@@ -108,6 +108,32 @@ class RepartitionController extends Controller
         return [];
     }
 
+    public static function getPourcentageCorrection($correction_id) {
+        $correction = CorrectionGrille::find($correction_id);
+        $acc = 0;
+        $total = 0;
+        foreach ($correction->criteres()->get() as $critere) {
+            if ($critere->niveau != 0) {
+                $acc += 1;
+            }
+            $total += 1;
+        }
+
+        return round(100 * ($acc/$total));
+    }
+
+    public static function getAvancerGrilleExercice($correcteur,$exercice,$grille) {
+        $eleves = RepartitionController::getEleves($correcteur->id,$exercice->id,$grille->id); 
+        $acc = 0;
+        $total = 0;
+        foreach ($eleves as $eleve) {
+            $id_corr = RepartitionController::getGrilleCorr($correcteur->id,$exercice->id,$grille->id,$eleve->id);
+            $acc += RepartitionController::getPourcentageCorrection($id_corr);
+            $total += 1;
+        }
+        return round($acc/$total);
+    }
+
     public static function getNiveau($exercice,$grille,$critere,$eleve) {
         $rep = Repartition::where('grille_id','=',$grille->id)->where('exercice_id','=',$exercice->id)
                         ->join('repartition_eleve','repartition_id','id')->where('eleve_id','=',$eleve->id)->first();
@@ -146,7 +172,7 @@ class RepartitionController extends Controller
         return $return;
     }
 
-        /**
+    /**
      *
      * Exports an associative array into a CSV file using PHP.
      *

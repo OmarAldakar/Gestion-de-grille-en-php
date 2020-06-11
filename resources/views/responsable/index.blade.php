@@ -62,8 +62,8 @@
         <div class="col-sm-12 col-md-6 col-xl-4 col-lg-6" style="margin-bottom: 20px">
             <div class="card" style="width: 20rem;">
                 <div class="card-body">
-                <h5 class="card-title"> {{$grille->titre}}</h5>
-                    <a type="submit" href="{{url('/resp/detail-grille',[$ue->id,$exercice->id,$grille->id])}}" class="btn btn-success" name="btn-accept"> En savoir plus </a>
+                <h5 class="card-title" style="margin-bottom:25px "> {{$grille->titre}}</h5>
+                    <a type="submit" href="{{url('/resp/detail-grille',[$ue->id,$exercice->id,$grille->id])}}" class="btn btn-success" name="btn-accept"> Gérer la correction </a>
                 </div>
             </div>
         </div>            
