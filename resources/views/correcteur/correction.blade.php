@@ -12,18 +12,24 @@
                 <hr class="my-4">
             
                 <div class="row">
-                    @foreach (RepartitionController::getEleveByCorrection($correction->id) as $eleve)
+                    @php
+                        $eleves = RepartitionController::getEleveByCorrection($correction->id);
+                    @endphp
+                    @foreach ($eleves as $eleve)
                     <div class="col-sm-10 col-md-6 col-xl-4 col-lg-6" style="margin-bottom: 20px">
                         <div class="card" style="width: 19rem;">
                             <div class="card-body">
                             <h5 class="card-title">  {{$eleve->nom}} {{$eleve->prenom}}</h5>
                             <p> {{$eleve->email}} </p>
+                            
+                            @if (sizeof($eleves) != 1)
                             <div class="row pl-3">
                                 <form method="POST" action="{{url('/correcteur/dissociate',[$ue->id,$correction->id,$exercice->id,$eleve->id])}}">
                                     @csrf
                                     <button type="submit" class="btn btn-danger mr-2">Retirer</button>
                                 </form>
                             </div>
+                            @endif
                             </div>
                         </div>
                     </div>
@@ -37,6 +43,13 @@
             </div>
         <form method="POST" action="{{url('/correcteur',[$ue->id,$correction->id,$exercice->id])}}">
         @csrf
+        <h3> {{$exercice->titre}}</h3>
+        @if ($exercice ->description != null)
+            <label for="description" style="font-size: larger">Description de l'exercice </label>
+            <p> {{$exercice ->description}}</p>            
+        @endif
+
+
         <h3> {{$grille->titre}}</h3>
 
         @if ($grille->precision != null)
@@ -154,15 +167,21 @@
       <form method="POST" action="{{url('/correcteur/associate',[$ue->id,$correction->id,$exercice->id])}}">
 
       <div class="modal-content">
-        <div class="modal-header">
+        <div class="modal-header" style="border-bottom: none;padding-bottom:0px">
           <h5 class="modal-title" id="exampleModalLabel">Séléctionner les élèves a associés </h5>
           <button type="button" class="close" data-dismiss="modal" aria-label="Close">
             <span aria-hidden="true">&times;</span>
           </button>
         </div>
-        <div class="modal-body">
+        <div class="modal-header">
+            <div class="col-sm-12 col-md-12 col-xl-12 col-lg-12" style="padding-left: 0px">
+              <input onkeyup="search('add_eleve')" class="form-control form-control-sm" id="add_eleve" type="text" placeholder="Rechercher" aria-label="Rechercher">
+            </div>
+        </div>
+        <div class="modal-body" style="max-height : 400px;overflow-y:auto;">
             @csrf
             @foreach($eleves as $eleve)
+            <div class="add_eleve">
             <div class="input-group" style="padding-bottom: 5px">
                 <div class="input-group-prepend">
                   <div class="input-group-text">    
@@ -170,6 +189,7 @@
                   </div>
                 </div>
                 <label class="form-control"> {{$eleve -> nom}} {{$eleve->prenom}}  </label>
+            </div>
             </div>
             @endforeach
         </div>
@@ -195,5 +215,24 @@
 
     </div>
 </div>
+
+<script type="text/javascript">
+    // Seach bar 3 et 4
+    function search(name) {
+      const search = document.getElementById(name);
+      const filter = search.value.toUpperCase();
+      const elems = document.getElementsByClassName(name);
+      console.log(elems);
+      for (let i=0; i < elems.length; i++) {
+        let element = elems[i];
+        let text = element.getElementsByTagName("label")[0].innerText;
+        if (text.toUpperCase().indexOf(filter) > -1) {
+          element.style.display = "";
+        } else {
+          element.style.display = "none";
+        }
+      } 
+    }
+  </script>
 
 @endsection

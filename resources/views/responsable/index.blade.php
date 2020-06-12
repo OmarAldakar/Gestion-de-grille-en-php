@@ -3,6 +3,7 @@
 @section('content')
 @php
     use App\Http\Controllers\UEController;
+    use App\Http\Controllers\RepartitionController;
 @endphp
 <div class="container">
 
@@ -63,6 +64,12 @@
             <div class="card" style="width: 20rem;">
                 <div class="card-body">
                 <h5 class="card-title" style="margin-bottom:25px "> {{$grille->titre}}</h5>
+                @php
+                    $progress = RepartitionController::getPourcentGrilleResp($exercice,$grille); 
+                @endphp
+                <div class="progress" style="margin-bottom: 20px">
+                    <div class="progress-bar" role="progressbar" style="width: {{$progress}}%;" aria-valuenow="{{$progress}}" aria-valuemin="0" aria-valuemax="100">{{$progress}}%</div>
+                </div>
                     <a type="submit" href="{{url('/resp/detail-grille',[$ue->id,$exercice->id,$grille->id])}}" class="btn btn-success" name="btn-accept"> Gérer la correction </a>
                 </div>
             </div>

@@ -118,6 +118,9 @@ class RepartitionController extends Controller
             }
             $total += 1;
         }
+        if ($total == 0) {
+            return 100;
+        }
 
         return round(100 * ($acc/$total));
     }
@@ -131,6 +134,29 @@ class RepartitionController extends Controller
             $acc += RepartitionController::getPourcentageCorrection($id_corr);
             $total += 1;
         }
+        if ($total == 0) {
+            return 100;
+        }
+
+        return round($acc/$total);
+    }
+
+    public static function getPourcentGrilleResp($exercice,$grille) {
+        $corrections = Repartition::join('repartition_eleve','id','repartition_id')
+                                    ->where('exercice_id','=',$exercice->id)
+                                    ->where('grille_id','=',$grille->id)
+                                    ->pluck('grille_corr_id');
+        $acc = 0;
+        $total = 0;
+        foreach(CorrectionGrille::find($corrections) as $correction) {
+            $acc += RepartitionController::getPourcentageCorrection($correction->id);
+            $total += 1;
+        }
+
+        if ($total == 0) {
+            return 0;
+        } 
+
         return round($acc/$total);
     }
 
