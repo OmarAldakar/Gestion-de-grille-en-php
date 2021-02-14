@@ -14,6 +14,6 @@ Ce projet vise à aider les enseignants d'IMT Atlantique à évaluer les élève
 
 ## Contributeurs
 
-Lucie Lavigne
-Rostom Zitoun
-Omar Aldakar
+- Lucie Lavigne
+- Rostom Zitoun
+- Omar Aldakar
